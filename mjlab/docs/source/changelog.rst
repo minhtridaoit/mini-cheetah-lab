@@ -8,6 +8,11 @@ Upcoming version (not yet released)
 Fixed
 ^^^^^
 
+- Added the Mini Cheetah velocity sensors and posture reward tolerances, wired
+  foot friction randomization, and removed the robot's embedded ground plane
+  so training contacts use scene terrain. Mini Cheetah defaults to TensorBoard
+  logging without requiring a W&B account.
+
 - Corrected Mini Cheetah hip mesh transforms and the initial standing pose for
   its MuJoCo joint axes, with ground clearance for the feet.
 
@@ -32,6 +37,10 @@ Added
 
 Changed
 ^^^^^^^
+
+- Limited this project's runtime to Mini Cheetah flat/rough velocity tasks;
+  removed other robot assets and task packages, updated train/play and scene
+  tools, and replaced the humanoid download demo with the local robot viewer.
 
 - Integrated this runtime into Mini Cheetah Lab under ``mjlab/``, added a
   standalone Mini Cheetah pose viewer, and replaced upstream repository

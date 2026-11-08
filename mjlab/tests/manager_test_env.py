@@ -1,4 +1,4 @@
-"""Cartpole balance and swingup environment configuration."""
+"""Test-only cart/hinge fixture for manager and reset regression tests."""
 
 from __future__ import annotations
 
@@ -28,11 +28,6 @@ from mjlab.managers.observation_manager import (
 from mjlab.managers.reward_manager import RewardTermCfg
 from mjlab.managers.scene_entity_config import SceneEntityCfg
 from mjlab.managers.termination_manager import TerminationTermCfg
-from mjlab.rl import (
-  RslRlModelCfg,
-  RslRlOnPolicyRunnerCfg,
-  RslRlPpoAlgorithmCfg,
-)
 from mjlab.scene import SceneCfg
 from mjlab.sim import MujocoCfg, SimulationCfg
 from mjlab.terrains import TerrainEntityCfg
@@ -41,7 +36,7 @@ from mjlab.viewer import ViewerConfig
 if TYPE_CHECKING:
   from mjlab.envs import ManagerBasedRlEnv
 
-_CARTPOLE_XML: Path = Path(__file__).parent / "cartpole.xml"
+_CARTPOLE_XML: Path = Path(__file__).parent / "fixtures" / "manager_test_model.xml"
 _CART_CFG = SceneEntityCfg("cartpole", joint_names=("slider",))
 _HINGE_CFG = SceneEntityCfg("cartpole", joint_names=("hinge_1",))
 
@@ -249,7 +244,7 @@ def _make_env_cfg(swing_up: bool = False) -> ManagerBasedRlEnvCfg:
   )
 
 
-def cartpole_balance_env_cfg(
+def make_manager_test_env_cfg(
   play: bool = False,
 ) -> ManagerBasedRlEnvCfg:
   cfg = _make_env_cfg(swing_up=False)
@@ -257,54 +252,3 @@ def cartpole_balance_env_cfg(
     cfg.episode_length_s = 1e10
     cfg.observations["actor"].enable_corruption = False
   return cfg
-
-
-def cartpole_swingup_env_cfg(
-  play: bool = False,
-) -> ManagerBasedRlEnvCfg:
-  cfg = _make_env_cfg(swing_up=True)
-  if play:
-    cfg.episode_length_s = 1e10
-    cfg.observations["actor"].enable_corruption = False
-  return cfg
-
-
-# RL config.
-
-
-def cartpole_ppo_runner_cfg() -> RslRlOnPolicyRunnerCfg:
-  return RslRlOnPolicyRunnerCfg(
-    actor=RslRlModelCfg(
-      hidden_dims=(64, 64),
-      activation="elu",
-      obs_normalization=False,
-      distribution_cfg={
-        "class_name": "GaussianDistribution",
-        "init_std": 1.0,
-        "std_type": "scalar",
-      },
-    ),
-    critic=RslRlModelCfg(
-      hidden_dims=(64, 64),
-      activation="elu",
-      obs_normalization=False,
-    ),
-    algorithm=RslRlPpoAlgorithmCfg(
-      value_loss_coef=1.0,
-      use_clipped_value_loss=True,
-      clip_param=0.2,
-      entropy_coef=0.01,
-      num_learning_epochs=5,
-      num_mini_batches=4,
-      learning_rate=1.0e-3,
-      schedule="adaptive",
-      gamma=0.99,
-      lam=0.95,
-      desired_kl=0.01,
-      max_grad_norm=1.0,
-    ),
-    experiment_name="cartpole",
-    save_interval=50,
-    num_steps_per_env=32,
-    max_iterations=500,
-  )

@@ -182,9 +182,11 @@ def test_nan_guard_saves_model(simple_model):
 def test_nan_guard_with_complex_model():
   """NaN guard should work with complex robot model."""
   from mjlab.scene import Scene
-  from mjlab.tasks.velocity.config.go1.env_cfgs import unitree_go1_rough_env_cfg
+  from mjlab.tasks.velocity.config.mini_cheetah.env_cfgs import (
+    mini_cheetah_rough_env_cfg,
+  )
 
-  scene = Scene(unitree_go1_rough_env_cfg().scene, device=get_test_device())
+  scene = Scene(mini_cheetah_rough_env_cfg().scene, device=get_test_device())
   model = scene.compile()
 
   with tempfile.TemporaryDirectory() as tmpdir:

@@ -7,6 +7,10 @@ và phát triển tiếp.
 Phần đang phát triển là hai bài toán bám vận tốc trên mặt phẳng và địa hình
 gồ ghề. Mô hình đã được chỉnh lại cách lắp mesh hông và tư thế đứng ban đầu.
 
+Phần huấn luyện chỉ hỗ trợ Mini Cheetah, với đúng hai task:
+`Mjlab-Velocity-Flat-MiniCheetah` và `Mjlab-Velocity-Rough-MiniCheetah`.
+Model, mesh và task của các robot khác đã được loại khỏi runtime.
+
 ## Cấu trúc
 
 | Thư mục | Nội dung |
@@ -59,11 +63,14 @@ uv run python scripts/view_mini_cheetah.py --check
 
 ```sh
 cd mjlab
-uv run train Mjlab-Velocity-Flat-MiniCheetah --env.scene.num-envs 4096
-uv run train Mjlab-Velocity-Rough-MiniCheetah --env.scene.num-envs 4096
+uv run train Mjlab-Velocity-Flat-MiniCheetah --env.scene.num-envs 256 --agent.max-iterations 1000
+uv run train Mjlab-Velocity-Rough-MiniCheetah --env.scene.num-envs 16 --agent.max-iterations 1000
 ```
 
-Giảm `--env.scene.num-envs` nếu GPU thiếu bộ nhớ. Sau khi có checkpoint:
+Các lệnh trên dùng số môi trường khởi đầu nhỏ cho GPU 6 GB; tăng dần sau khi
+kiểm tra bộ nhớ và tốc độ. Mặc định ghi log cục bộ bằng TensorBoard, không cần
+tài khoản W&B. Xem [docs/TRAINING.md](docs/TRAINING.md) để chạy thử, theo dõi
+và tiếp tục huấn luyện. Sau khi có checkpoint:
 
 ```sh
 uv run play Mjlab-Velocity-Flat-MiniCheetah \
@@ -85,7 +92,7 @@ make test-config
 ```
 
 Môi trường Python, log, checkpoint và file build được bỏ qua bởi Git.
-Hướng dẫn tạo commit và đẩy lên repo của bạn nằm trong [docs/GITHUB.md](docs/GITHUB.md).
+Repo dự án: [minhtridaoit/mini-cheetah-lab](https://github.com/minhtridaoit/mini-cheetah-lab).
 Hướng dẫn build bộ điều khiển C++ nằm trong
 [docs/CHEETAH_SOFTWARE.md](docs/CHEETAH_SOFTWARE.md).
 

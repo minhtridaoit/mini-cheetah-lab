@@ -496,16 +496,18 @@ def test_expand_model_fields_recreates_cuda_graph(device):
 
 
 @pytest.mark.slow
-def test_g1_foot_friction_shared_across_geoms(device):
-  """G1 velocity env has uniform foot friction across all collision geoms."""
+def test_mini_cheetah_foot_friction_shared_across_geoms(device):
+  """Mini Cheetah velocity env has uniform foot friction across all collision geoms."""
   import io
   import warnings
   from contextlib import redirect_stderr, redirect_stdout
 
   from mjlab.envs.manager_based_rl_env import ManagerBasedRlEnv
-  from mjlab.tasks.velocity.config.g1.env_cfgs import unitree_g1_flat_env_cfg
+  from mjlab.tasks.velocity.config.mini_cheetah.env_cfgs import (
+    mini_cheetah_flat_env_cfg,
+  )
 
-  cfg = unitree_g1_flat_env_cfg()
+  cfg = mini_cheetah_flat_env_cfg()
 
   with warnings.catch_warnings():
     warnings.simplefilter("ignore")
@@ -515,9 +517,7 @@ def test_g1_foot_friction_shared_across_geoms(device):
   try:
     robot = env.scene["robot"]
 
-    foot_geom_names = [
-      f"{side}_foot{i}_collision" for side in ("left", "right") for i in range(1, 8)
-    ]
+    foot_geom_names = [f"{leg}_foot_collision" for leg in ("FR", "FL", "RR", "RL")]
     foot_geom_ids, _ = robot.find_geoms(foot_geom_names)
     foot_geom_indices = robot.indexing.geom_ids[foot_geom_ids]
 

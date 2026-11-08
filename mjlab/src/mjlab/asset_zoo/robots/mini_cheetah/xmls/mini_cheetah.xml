@@ -31,7 +31,6 @@
 
   <worldbody>
     <light directional="true" pos="0 0 4" dir="0 0 -1" diffuse="0.8 0.8 0.8" specular="0.2 0.2 0.2"/>
-    <geom name="ground" type="plane" size="50 50 0.1" material="grid_mat" condim="3" friction="1.0 0.05 0.01"/>
 
     <body name="trunk" pos="0 0 0.29" childclass="mini_cheetah">
       <light pos="0 0 2" mode="trackcom"/>
@@ -141,4 +140,10 @@
       </body>
     </body>
   </worldbody>
+
+  <sensor>
+    <gyro name="imu_ang_vel" site="imu"/>
+    <velocimeter name="imu_lin_vel" site="imu"/>
+    <subtreeangmom name="root_angmom" body="trunk"/>
+  </sensor>
 </mujoco>

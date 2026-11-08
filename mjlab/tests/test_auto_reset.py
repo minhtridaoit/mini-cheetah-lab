@@ -3,13 +3,13 @@
 import pytest
 import torch
 from conftest import get_test_device
+from manager_test_env import make_manager_test_env_cfg
 from test_command_manager import CounterCommand, CounterCommandCfg
 
 from mjlab.actuator import XmlActuatorCfg
 from mjlab.entity import EntityArticulationInfoCfg
 from mjlab.envs import ManagerBasedRlEnv
 from mjlab.managers.event_manager import EventTermCfg
-from mjlab.tasks.cartpole.cartpole_env_cfg import cartpole_balance_env_cfg
 
 
 @pytest.fixture(scope="module")
@@ -18,7 +18,7 @@ def device():
 
 
 def _make_cfg(auto_reset: bool):
-  cfg = cartpole_balance_env_cfg()
+  cfg = make_manager_test_env_cfg()
   cfg.episode_length_s = 0.5  # 10 steps at dt=0.05
   cfg.scene.num_envs = 4
   cfg.auto_reset = auto_reset

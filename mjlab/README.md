@@ -4,12 +4,15 @@ This directory contains the vendored MjLab 1.6.0 runtime and this project's
 Mini Cheetah model, velocity tasks, and PPO configuration. Use the
 [project README](../README.md) for setup and training instructions.
 
+Only Mini Cheetah is supported. The other upstream robot assets, task
+configurations and associated demos are not included in this runtime.
+
 Run these commands from this directory after installing dependencies with uv:
 
 ```sh
 uv run python scripts/view_mini_cheetah.py
-uv run train Mjlab-Velocity-Flat-MiniCheetah --env.scene.num-envs 4096
-uv run train Mjlab-Velocity-Rough-MiniCheetah --env.scene.num-envs 4096
+uv run train Mjlab-Velocity-Flat-MiniCheetah --env.scene.num-envs 256
+uv run train Mjlab-Velocity-Rough-MiniCheetah --env.scene.num-envs 16
 ```
 
 Configuration files:

@@ -26,6 +26,9 @@ Local changes include the Mini Cheetah robot asset and velocity-task
 registration, flat/rough environment and PPO settings, corrected hip mesh
 transforms and standing pose, a local model viewer, and project documentation.
 The MjLab runtime is included directly, rather than as a Git submodule.
+The imported runtime has been narrowed to Mini Cheetah: other robot assets,
+task packages, and their specific demos and tests have been removed. The
+preserved upstream overview and citation describe the original project.
 
 ## Bundled libraries
 

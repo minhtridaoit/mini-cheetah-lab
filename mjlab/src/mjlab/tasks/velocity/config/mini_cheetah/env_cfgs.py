@@ -30,6 +30,8 @@ def mini_cheetah_rough_env_cfg(
   cfg = make_velocity_env_cfg()
 
   cfg.sim.mujoco.ccd_iterations = 500
+  cfg.sim.mujoco.iterations = 50
+  cfg.sim.mujoco.ls_iterations = 50
   cfg.sim.mujoco.impratio = 10
   cfg.sim.mujoco.cone = "elliptic"
   cfg.sim.contact_sensor_maxmatch = 500
@@ -118,6 +120,18 @@ def mini_cheetah_rough_env_cfg(
   cfg.viewer.elevation = -10.0
 
   cfg.events["base_com"].params["asset_cfg"].body_names = ("trunk",)
+  cfg.events["foot_friction"].params["asset_cfg"].geom_names = geom_names
+
+  # The base task leaves these robot-specific tolerances empty.
+  for regime, hip_thigh_std, calf_std in (
+    ("standing", 0.05, 0.1),
+    ("walking", 0.3, 0.6),
+    ("running", 0.3, 0.6),
+  ):
+    cfg.rewards["pose"].params[f"std_{regime}"] = {
+      ".*_(hip|thigh)_joint": hip_thigh_std,
+      ".*_calf_joint": calf_std,
+    }
 
   cfg.rewards["upright"].params["asset_cfg"].body_names = ("trunk",)
   cfg.rewards["upright"].params["terrain_sensor_names"] = ("terrain_scan",)
