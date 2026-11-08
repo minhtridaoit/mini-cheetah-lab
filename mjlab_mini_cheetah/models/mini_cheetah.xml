@@ -1,0 +1,172 @@
+<mujoco model="mini_cheetah">
+  <compiler angle="radian" coordinate="local" meshdir="meshes"/>
+
+  <option timestep="0.002" iterations="10" solver="Newton" gravity="0 0 -9.81">
+    <flag contact="enable" gravity="enable"/>
+  </option>
+
+  <default>
+    <joint limited="true" damping="0.05" armature="0.01"/>
+    <geom condim="3" friction="0.8 0.02 0.01" solref="0.005 1"/>
+    <motor ctrlrange="-17 17"/>
+    <default class="visual">
+      <geom group="1" type="mesh" contype="0" conaffinity="0"/>
+    </default>
+    <default class="collision">
+      <geom group="0" rgba="0.2 0.3 0.4 0.5"/>
+    </default>
+  </default>
+
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.4 0.6 0.8" rgb2="0.1 0.15 0.2" width="512" height="512"/>
+    <texture name="grid" type="2d" builtin="checker" rgb1="0.9 0.9 0.9" rgb2="0.6 0.6 0.6" width="512" height="512" mark="edge" markrgb="0.8 0.8 0.8"/>
+    <material name="grid_mat" texture="grid" texrepeat="20 20" reflectance="0.2"/>
+    <material name="chassis_mat" rgba="0.15 0.15 0.15 1.0"/>
+    <material name="link_mat" rgba="0.7 0.7 0.7 1.0"/>
+    <material name="foot_mat" rgba="0.8 0.2 0.2 1.0"/>
+
+    <mesh name="mini_body" file="mini_body.obj"/>
+    <mesh name="mini_abad" file="mini_abad.obj"/>
+    <mesh name="mini_upper_link" file="mini_upper_link.obj"/>
+    <mesh name="mini_lower_link" file="mini_lower_link.obj"/>
+  </asset>
+
+  <worldbody>
+    <light directional="true" pos="0 0 4" dir="0 0 -1" diffuse="0.8 0.8 0.8" specular="0.2 0.2 0.2"/>
+    <geom name="ground" type="plane" size="50 50 0.1" material="grid_mat" condim="3" friction="1.0 0.05 0.01"/>
+
+    <!-- Mini Cheetah Torso -->
+    <body name="torso" pos="0 0 0.35">
+      <freejoint name="root"/>
+      <inertial pos="0 0 0" mass="3.3" diaginertia="0.011253 0.036203 0.042673"/>
+      <geom name="torso_col" class="collision" type="box" size="0.19 0.049 0.05" material="chassis_mat"/>
+      <geom class="visual" mesh="mini_body" material="chassis_mat"/>
+      <site name="imu" pos="0 0 0"/>
+
+      <!-- ================= Front Right Leg (FR) ================= -->
+      <body name="fr_abad" pos="0.19 -0.049 0">
+        <inertial pos="0 -0.036 0" mass="0.54" diaginertia="0.000381 0.000560 0.000444"/>
+        <joint name="fr_abad_joint" type="hinge" axis="1 0 0" range="-0.8 0.8"/>
+        <geom class="collision" type="cylinder" size="0.035 0.03" fromto="0 0 0 0 -0.062 0"/>
+        
+        <body name="fr_thigh" pos="0 -0.062 0">
+          <inertial pos="0 -0.016 -0.02" mass="0.634" diaginertia="0.001983 0.002103 0.000408"/>
+          <joint name="fr_hip_joint" type="hinge" axis="0 1 0" range="-1.8 1.8"/>
+          <geom class="collision" type="capsule" size="0.02" fromto="0 0 0 0 0 -0.209" material="link_mat"/>
+          <geom class="visual" mesh="mini_upper_link" material="link_mat"/>
+
+          <body name="fr_calf" pos="0 0 -0.209">
+            <inertial pos="0 0 -0.061" mass="0.064" diaginertia="0.000006 0.000248 0.000245"/>
+            <joint name="fr_knee_joint" type="hinge" axis="0 1 0" range="-2.6 -0.4"/>
+            <geom class="collision" type="capsule" size="0.015" fromto="0 0 0 0 0 -0.195" material="link_mat"/>
+            <geom class="visual" mesh="mini_lower_link" material="link_mat"/>
+            <geom name="fr_foot" class="collision" type="sphere" size="0.02" pos="0 0 -0.195" material="foot_mat" condim="6" friction="1.2 0.02 0.01"/>
+            <site name="fr_foot_site" pos="0 0 -0.195"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- ================= Front Left Leg (FL) ================= -->
+      <body name="fl_abad" pos="0.19 0.049 0">
+        <inertial pos="0 0.036 0" mass="0.54" diaginertia="0.000381 0.000560 0.000444"/>
+        <joint name="fl_abad_joint" type="hinge" axis="1 0 0" range="-0.8 0.8"/>
+        <geom class="collision" type="cylinder" size="0.035 0.03" fromto="0 0 0 0 0.062 0"/>
+        
+        <body name="fl_thigh" pos="0 0.062 0">
+          <inertial pos="0 0.016 -0.02" mass="0.634" diaginertia="0.001983 0.002103 0.000408"/>
+          <joint name="fl_hip_joint" type="hinge" axis="0 1 0" range="-1.8 1.8"/>
+          <geom class="collision" type="capsule" size="0.02" fromto="0 0 0 0 0 -0.209" material="link_mat"/>
+          <geom class="visual" mesh="mini_upper_link" material="link_mat"/>
+
+          <body name="fl_calf" pos="0 0 -0.209">
+            <inertial pos="0 0 -0.061" mass="0.064" diaginertia="0.000006 0.000248 0.000245"/>
+            <joint name="fl_knee_joint" type="hinge" axis="0 1 0" range="-2.6 -0.4"/>
+            <geom class="collision" type="capsule" size="0.015" fromto="0 0 0 0 0 -0.195" material="link_mat"/>
+            <geom class="visual" mesh="mini_lower_link" material="link_mat"/>
+            <geom name="fl_foot" class="collision" type="sphere" size="0.02" pos="0 0 -0.195" material="foot_mat" condim="6" friction="1.2 0.02 0.01"/>
+            <site name="fl_foot_site" pos="0 0 -0.195"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- ================= Rear Right Leg (RR) ================= -->
+      <body name="rr_abad" pos="-0.19 -0.049 0">
+        <inertial pos="0 -0.036 0" mass="0.54" diaginertia="0.000381 0.000560 0.000444"/>
+        <joint name="rr_abad_joint" type="hinge" axis="1 0 0" range="-0.8 0.8"/>
+        <geom class="collision" type="cylinder" size="0.035 0.03" fromto="0 0 0 0 -0.062 0"/>
+        
+        <body name="rr_thigh" pos="0 -0.062 0">
+          <inertial pos="0 -0.016 -0.02" mass="0.634" diaginertia="0.001983 0.002103 0.000408"/>
+          <joint name="rr_hip_joint" type="hinge" axis="0 1 0" range="-1.8 1.8"/>
+          <geom class="collision" type="capsule" size="0.02" fromto="0 0 0 0 0 -0.209" material="link_mat"/>
+          <geom class="visual" mesh="mini_upper_link" material="link_mat"/>
+
+          <body name="rr_calf" pos="0 0 -0.209">
+            <inertial pos="0 0 -0.061" mass="0.064" diaginertia="0.000006 0.000248 0.000245"/>
+            <joint name="rr_knee_joint" type="hinge" axis="0 1 0" range="-2.6 -0.4"/>
+            <geom class="collision" type="capsule" size="0.015" fromto="0 0 0 0 0 -0.195" material="link_mat"/>
+            <geom class="visual" mesh="mini_lower_link" material="link_mat"/>
+            <geom name="rr_foot" class="collision" type="sphere" size="0.02" pos="0 0 -0.195" material="foot_mat" condim="6" friction="1.2 0.02 0.01"/>
+            <site name="rr_foot_site" pos="0 0 -0.195"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- ================= Rear Left Leg (RL) ================= -->
+      <body name="rl_abad" pos="-0.19 0.049 0">
+        <inertial pos="0 0.036 0" mass="0.54" diaginertia="0.000381 0.000560 0.000444"/>
+        <joint name="rl_abad_joint" type="hinge" axis="1 0 0" range="-0.8 0.8"/>
+        <geom class="collision" type="cylinder" size="0.035 0.03" fromto="0 0 0 0 0.062 0"/>
+        
+        <body name="rl_thigh" pos="0 0.062 0">
+          <inertial pos="0 0.016 -0.02" mass="0.634" diaginertia="0.001983 0.002103 0.000408"/>
+          <joint name="rl_hip_joint" type="hinge" axis="0 1 0" range="-1.8 1.8"/>
+          <geom class="collision" type="capsule" size="0.02" fromto="0 0 0 0 0 -0.209" material="link_mat"/>
+          <geom class="visual" mesh="mini_upper_link" material="link_mat"/>
+
+          <body name="rl_calf" pos="0 0 -0.209">
+            <inertial pos="0 0 -0.061" mass="0.064" diaginertia="0.000006 0.000248 0.000245"/>
+            <joint name="rl_knee_joint" type="hinge" axis="0 1 0" range="-2.6 -0.4"/>
+            <geom class="collision" type="capsule" size="0.015" fromto="0 0 0 0 0 -0.195" material="link_mat"/>
+            <geom class="visual" mesh="mini_lower_link" material="link_mat"/>
+            <geom name="rl_foot" class="collision" type="sphere" size="0.02" pos="0 0 -0.195" material="foot_mat" condim="6" friction="1.2 0.02 0.01"/>
+            <site name="rl_foot_site" pos="0 0 -0.195"/>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <!-- Actuators for 12 joints -->
+  <actuator>
+    <motor name="fr_abad_motor" joint="fr_abad_joint" gear="1" ctrllimited="true" ctrlrange="-17 17"/>
+    <motor name="fr_hip_motor"  joint="fr_hip_joint"  gear="1" ctrllimited="true" ctrlrange="-17 17"/>
+    <motor name="fr_knee_motor" joint="fr_knee_joint" gear="1" ctrllimited="true" ctrlrange="-17 17"/>
+
+    <motor name="fl_abad_motor" joint="fl_abad_joint" gear="1" ctrllimited="true" ctrlrange="-17 17"/>
+    <motor name="fl_hip_motor"  joint="fl_hip_joint"  gear="1" ctrllimited="true" ctrlrange="-17 17"/>
+    <motor name="fl_knee_motor" joint="fl_knee_joint" gear="1" ctrllimited="true" ctrlrange="-17 17"/>
+
+    <motor name="rr_abad_motor" joint="rr_abad_joint" gear="1" ctrllimited="true" ctrlrange="-17 17"/>
+    <motor name="rr_hip_motor"  joint="rr_hip_joint"  gear="1" ctrllimited="true" ctrlrange="-17 17"/>
+    <motor name="rr_knee_motor" joint="rr_knee_joint" gear="1" ctrllimited="true" ctrlrange="-17 17"/>
+
+    <motor name="rl_abad_motor" joint="rl_abad_joint" gear="1" ctrllimited="true" ctrlrange="-17 17"/>
+    <motor name="rl_hip_motor"  joint="rl_hip_joint"  gear="1" ctrllimited="true" ctrlrange="-17 17"/>
+    <motor name="rl_knee_motor" joint="rl_knee_joint" gear="1" ctrllimited="true" ctrlrange="-17 17"/>
+  </actuator>
+
+  <sensor>
+    <accelerometer name="imu_acc" site="imu"/>
+    <gyro name="imu_gyro" site="imu"/>
+    <framequat name="imu_quat" objtype="site" objname="imu"/>
+    <framepos name="body_pos" objtype="site" objname="imu"/>
+    <framelinvel name="body_linvel" objtype="site" objname="imu"/>
+
+    <touch name="fr_touch" site="fr_foot_site"/>
+    <touch name="fl_touch" site="fl_foot_site"/>
+    <touch name="rr_touch" site="rr_foot_site"/>
+    <touch name="rl_touch" site="rl_foot_site"/>
+  </sensor>
+</mujoco>
+
